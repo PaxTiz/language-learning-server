@@ -65,10 +65,12 @@ export default class Application {
         this.app.use(helmet())
         this.app.use(express.urlencoded({ extended: false }))
         this.app.use(express.json())
+        this.app.use((req, res, next) => next(), cors())
         this.app.use(
             cors({
                 credentials: true,
-                origin: ['*'],
+                origin: ['http://localhost:8080'],
+                preflightContinue: true,
                 optionsSuccessStatus: 200,
             }),
         )
