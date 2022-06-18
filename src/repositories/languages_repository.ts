@@ -21,6 +21,14 @@ const count = async ({ name }: CountInterface): Promise<number> => {
     })
 }
 
+const findOneBy = async (property: string, value: unknown): Promise<languages | null> => {
+    return prisma.languages.findFirst({
+        where: {
+            [property]: value,
+        },
+    })
+}
+
 const findAll = async ({ limit, offset, query }: SearchInterface): Promise<Array<languages>> => {
     return prisma.languages.findMany({
         skip: offset,
@@ -36,4 +44,5 @@ const findAll = async ({ limit, offset, query }: SearchInterface): Promise<Array
 export default {
     count,
     findAll,
+    findOneBy,
 }

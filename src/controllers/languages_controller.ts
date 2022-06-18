@@ -21,4 +21,10 @@ export default {
         const response = await languagesService.index(query)
         return ServiceResponse(res, response)
     },
+
+    async findById(req: Request, res: Response) {
+        return languagesService
+            .findById(req.params.id)
+            .then((language) => ServiceResponse(res, language))
+    },
 }

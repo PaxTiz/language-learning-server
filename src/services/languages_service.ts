@@ -11,4 +11,8 @@ export default {
     async index(params: SearchInterface) {
         return languagesRepository.findAll(params)
     },
+
+    async findById(id: string) {
+        return languagesRepository.findOneBy('id', id)
+    },
 }

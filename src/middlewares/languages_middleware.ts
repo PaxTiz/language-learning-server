@@ -10,4 +10,6 @@ export default {
         param('q').optional().isString(),
         validate,
     ],
+
+    findById: [param('id').isUUID(), validate],
 }
