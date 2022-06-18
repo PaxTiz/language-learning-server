@@ -52,7 +52,9 @@ export default {
         const languages = req.query.languages as Array<string>
 
         return languagesService.export(format, all, languages).then((output) => {
-            return output instanceof FormError ? ServiceResponse(res, output) : res.sendFile(output)
+            return output instanceof FormError
+                ? ServiceResponse(res, output)
+                : res.download(output.path, output.filename)
         })
     },
 }

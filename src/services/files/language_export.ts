@@ -5,17 +5,22 @@ import { tmpdir } from 'os'
 import { join } from 'path'
 
 export default {
-    async exportJSON(languages: Array<languages>): Promise<string> {
+    async exportJSON(languages: Array<languages>): Promise<{ path: string; filename: string }> {
         const date = new Date().getTime()
         const json = JSON.stringify(languages)
-        const file = join(tmpdir(), `${date}.json`)
-        await writeFile(file, json)
-        return file
+        const filename = `${date}-export-languages.json`
+        const path = join(tmpdir(), filename)
+        await writeFile(path, json)
+        return { path, filename }
     },
 
-    async exportExcel(format: string, languages: Array<languages>): Promise<string> {
+    async exportExcel(
+        format: string,
+        languages: Array<languages>,
+    ): Promise<{ path: string; filename: string }> {
         const date = new Date().getTime()
-        const file = join(tmpdir(), `${date}.csv`)
+        const filename = `${date}.csv`
+        const path = join(tmpdir(), filename)
 
         const workbook = new excel.Workbook()
         const sheet = workbook.addWorksheet()
@@ -26,11 +31,11 @@ export default {
         ]
         sheet.addRows(languages)
         if (format === 'csv') {
-            await workbook.csv.writeFile(file)
+            await workbook.csv.writeFile(path)
         } else if (format === 'excel') {
-            await workbook.xlsx.writeFile(file)
+            await workbook.xlsx.writeFile(path)
         }
 
-        return file
+        return { path, filename }
     },
 }
