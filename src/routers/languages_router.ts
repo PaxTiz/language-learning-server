@@ -9,4 +9,8 @@ module.exports = (app: Express) => {
     router.get('/', middleware.index, controller.index)
     router.get('/count', middleware.count, controller.count)
     router.get('/:id', middleware.findById, controller.findById)
+
+    router.post('/', middleware.create, controller.create)
+
+    router.patch('/:id', middleware.update, controller.update)
 }
