@@ -13,4 +13,6 @@ module.exports = (app: Express) => {
     router.post('/', middleware.create, controller.create)
 
     router.patch('/:id', middleware.update, controller.update)
+
+    router.delete('/:id', middleware.delete, controller.delete)
 }

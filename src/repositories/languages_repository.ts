@@ -87,6 +87,12 @@ const update = (id: string, language: LanguageInterface): Promise<languages> => 
     })
 }
 
+const destroy = (id: string) => {
+    return prisma.languages.delete({
+        where: { id },
+    })
+}
+
 export default {
     count,
     findAll,
@@ -94,4 +100,5 @@ export default {
     findOneByExcept,
     create,
     update,
+    destroy,
 }

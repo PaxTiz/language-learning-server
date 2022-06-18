@@ -39,4 +39,9 @@ export default {
         const id = req.params.id
         return languagesService.update(id, body).then((language) => ServiceResponse(res, language))
     },
+
+    async delete(req: Request, res: Response) {
+        const id = req.params.id
+        return languagesService.delete(id).then((language) => ServiceResponse(res, language))
+    },
 }

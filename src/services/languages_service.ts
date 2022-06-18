@@ -43,4 +43,11 @@ export default {
 
         return languagesRepository.update(id, language)
     },
+
+    async delete(id: string) {
+        const exists = await languagesRepository.findOneBy('id', id)
+        if (!exists) return null
+
+        return languagesRepository.destroy(id)
+    },
 }

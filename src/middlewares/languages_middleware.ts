@@ -25,4 +25,6 @@ export default {
         body('code').isString().isLength({ min: 3, max: 3 }),
         validate,
     ],
+
+    delete: [param('id').isUUID(), validate],
 }
