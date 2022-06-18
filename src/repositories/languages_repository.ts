@@ -57,13 +57,29 @@ const findOneByExcept = (condition: FindOneExceptInterface): Promise<languages |
     })
 }
 
-const findAll = ({ limit, offset, query }: SearchInterface): Promise<Array<languages>> => {
+const findAll = (
+    { limit, offset, query }: SearchInterface = {
+        limit: undefined,
+        offset: undefined,
+        query: undefined,
+    },
+): Promise<Array<languages>> => {
     return prisma.languages.findMany({
         skip: offset,
         take: limit,
         where: {
             name: {
                 contains: query,
+            },
+        },
+    })
+}
+
+const findAllByIds = (ids: Array<string>): Promise<Array<languages>> => {
+    return prisma.languages.findMany({
+        where: {
+            id: {
+                in: ids,
             },
         },
     })
@@ -96,6 +112,7 @@ const destroy = (id: string) => {
 export default {
     count,
     findAll,
+    findAllByIds,
     findOneBy,
     findOneByExcept,
     create,

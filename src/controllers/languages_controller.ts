@@ -1,6 +1,7 @@
 import { Request, Response } from 'express'
 import { LanguageInterface } from '../repositories/languages_repository'
 import languagesService from '../services/languages_service'
+import FormError from '../utils/form_error'
 import { ServiceResponse } from './controller'
 
 export default {
@@ -43,5 +44,15 @@ export default {
     async delete(req: Request, res: Response) {
         const id = req.params.id
         return languagesService.delete(id).then((language) => ServiceResponse(res, language))
+    },
+
+    async export(req: Request, res: Response) {
+        const format = req.query.format as string
+        const all = !!req.query.all
+        const languages = req.query.languages as Array<string>
+
+        return languagesService.export(format, all, languages).then((output) => {
+            return output instanceof FormError ? ServiceResponse(res, output) : res.sendFile(output)
+        })
     },
 }

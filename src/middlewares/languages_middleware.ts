@@ -1,4 +1,4 @@
-import { body, param } from 'express-validator'
+import { body, param, query } from 'express-validator'
 import { validate } from './middleware'
 
 export default {
@@ -27,4 +27,11 @@ export default {
     ],
 
     delete: [param('id').isUUID(), validate],
+
+    export: [
+        query('format').isIn(['json', 'csv', 'excel']),
+        query('all').optional().isBoolean().toBoolean(),
+        query('languages.*').optional().isUUID(),
+        validate,
+    ],
 }

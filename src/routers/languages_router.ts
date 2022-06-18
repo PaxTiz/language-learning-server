@@ -8,6 +8,7 @@ module.exports = (app: Express) => {
 
     router.get('/', middleware.index, controller.index)
     router.get('/count', middleware.count, controller.count)
+    router.get('/export', middleware.export, controller.export)
     router.get('/:id', middleware.findById, controller.findById)
 
     router.post('/', middleware.create, controller.create)
