@@ -7,4 +7,8 @@ export type UserWithRole = Prisma.userGetPayload<{
     include: { role: true }
 }>
 
+export type CourseWithLanguage = Prisma.coursesGetPayload<{
+    include: { language: true }
+}>
+
 export default prisma
