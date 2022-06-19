@@ -1,4 +1,5 @@
 import { PrismaClient } from '.prisma/client'
+import { faker } from '@faker-js/faker'
 import Logger from '../src/utils/logger'
 
 const client = new PrismaClient()
@@ -6,8 +7,15 @@ const client = new PrismaClient()
 const truncate = async () => {
     Logger.info('Delete users')
     await client.user.deleteMany()
+
     Logger.info('Delete roles')
     await client.role.deleteMany()
+
+    Logger.info('Delete courses')
+    await client.courses.deleteMany()
+
+    Logger.info('Delete languages')
+    await client.languages.deleteMany()
 }
 
 const seed = async () => {
@@ -18,6 +26,19 @@ const seed = async () => {
                 name: 'default',
                 displayName: 'Member',
             },
+        })
+
+        const languages = []
+        for (let _i = 0; _i < 10000; _i++) {
+            languages.push({
+                name: faker.random.word(),
+                code: faker.random.alpha(3).toUpperCase(),
+            })
+        }
+
+        await client.languages.createMany({
+            data: languages,
+            skipDuplicates: true,
         })
     })
 }
