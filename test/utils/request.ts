@@ -24,7 +24,7 @@ const callApi = (
     }
 }
 
-const request = async (method: Method, url: string, body: unknown | null, auth = false) => {
+const request = async (method: Method, url: string, body: unknown | null = null, auth = false) => {
     try {
         let response = null
         if (!!auth) {

@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { expect } from 'chai'
-import request from './utils/request'
-
-import prisma from '../src/client'
+import prisma from '../../src/client'
+import request from '../utils/request'
 
 const username = 'Test User'
 const email = 'test@test.com'

@@ -11,7 +11,7 @@
     "prisma:seed": "npx prisma db seed",
     "prisma:pull": "npx prisma db pull",
     "prisma:generate": "npx prisma generate",
-    "test": "./node_modules/ts-mocha/bin/ts-mocha",
+    "test:e2e": "./node_modules/ts-mocha/bin/ts-mocha \"test/e2e/**/*.ts\"",
     "lint": "./node_modules/eslint/bin/eslint.js '*/**/*.{js,ts}' --quiet",
     "lint:fix": "./node_modules/eslint/bin/eslint.js '*/**/*.{js,ts}' --quiet --fix"
   },
