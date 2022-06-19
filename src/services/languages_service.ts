@@ -5,7 +5,8 @@ import languagesRepository, {
     SearchInterface,
 } from '../repositories/languages_repository'
 import FormError from '../utils/form_error'
-import languageExport from './files/language_export'
+import { Format } from './export/exporter'
+import { LanguagesExporter } from './export/languages_exporter'
 
 export default {
     async count(params: CountInterface) {
@@ -62,9 +63,7 @@ export default {
             ? await languagesRepository.findAll()
             : await languagesRepository.findAllByIds(parseIds(ids))
 
-        return format === 'json'
-            ? languageExport.exportJSON(languages)
-            : languageExport.exportExcel(format, languages)
+        return new LanguagesExporter(format as Format, languages).export()
     },
 }
 
