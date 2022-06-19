@@ -141,7 +141,7 @@ describe('Languages endpoints', () => {
         it('should create a language if body is valid', () => {
             return request('post', '/languages', validLanguage).then(({ data, status }) => {
                 expect(status).equal(201)
-                expect(data).to.be.a('object').to.have.keys('id', 'name', 'code')
+                isLanguage(data)
                 expect(data.name).equal(validLanguage.name)
                 expect(data.code).equal(validLanguage.code)
                 validLanguage.id = data.id
@@ -211,7 +211,7 @@ describe('Languages endpoints', () => {
                 name: 'Dummy Language Updated',
             }).then(({ data, status }) => {
                 expect(status).equal(200)
-                expect(data).to.be.a('object').to.have.keys('id', 'name', 'code')
+                isLanguage(data)
                 expect(data.name).equal('Dummy Language Updated')
                 expect(data.code).equal(validLanguage.code)
             })
@@ -231,7 +231,7 @@ describe('Languages endpoints', () => {
                 name: 'Dummy Language Updated',
             }).then(({ data, status }) => {
                 expect(status).equal(200)
-                expect(data).to.be.a('object').to.have.keys('id', 'name', 'code')
+                isLanguage(data)
                 expect(data.name).equal('Dummy Language Updated')
                 expect(data.code).equal(validLanguage.code)
             })
