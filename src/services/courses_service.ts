@@ -1,10 +1,7 @@
 import { CourseWithLanguage } from '../client'
-import courseRepositoru, {
-    CountInterface,
-    CourseInterface,
-    SearchInterface,
-} from '../repositories/courses_repository'
+import courseRepositoru, { CourseInterface } from '../repositories/courses_repository'
 import languagesRepository from '../repositories/languages_repository'
+import { CountInterface, SearchInterface } from '../repositories/repository'
 import FormError from '../utils/form_error'
 import { CoursesExporter } from './export/courses_exporter'
 import { Format } from './export/exporter'

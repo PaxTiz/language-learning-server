@@ -1,9 +1,6 @@
 import { languages } from '@prisma/client'
-import languagesRepository, {
-    CountInterface,
-    LanguageInterface,
-    SearchInterface,
-} from '../repositories/languages_repository'
+import languagesRepository, { LanguageInterface } from '../repositories/languages_repository'
+import { CountInterface, SearchInterface } from '../repositories/repository'
 import FormError from '../utils/form_error'
 import { Format } from './export/exporter'
 import { LanguagesExporter } from './export/languages_exporter'

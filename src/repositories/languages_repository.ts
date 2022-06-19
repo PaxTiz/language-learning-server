@@ -1,29 +1,10 @@
 import { languages } from '@prisma/client'
 import prisma from '../client'
-
-export type SearchInterface = {
-    limit: number | undefined
-    offset: number | undefined
-    query: string | undefined
-}
-
-export type CountInterface = {
-    name: string | undefined
-}
+import { CountInterface, FindOneExceptInterface, SearchInterface } from './repository'
 
 export type LanguageInterface = {
     name: string
     code: string
-}
-
-type FindOneInterface = {
-    property: string
-    value: unknown
-}
-
-type FindOneExceptInterface = {
-    find: FindOneInterface
-    except: FindOneInterface
 }
 
 const count = ({ name }: CountInterface): Promise<number> => {
