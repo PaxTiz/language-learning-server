@@ -4,7 +4,7 @@
   "main": "app.js",
   "license": "MIT",
   "scripts": {
-    "dev": "nodemon app.ts",
+    "dev": "nodemon --watch src app.ts",
     "build": "tsc",
     "start": "NODE_ENV=production node ./dist/app.js",
     "prisma:migrate": "npx prisma migrate dev && npx prisma generate",
