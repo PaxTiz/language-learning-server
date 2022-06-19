@@ -1,15 +1,10 @@
 import { body, param, query } from 'express-validator'
-import { validate } from './middleware'
+import { applyCommonFilters, validate } from './middleware'
 
 export default {
     count: [param('name').optional().isString(), validate],
 
-    index: [
-        param('offset').optional().isInt(),
-        param('limit').optional().isInt(),
-        param('q').optional().isString(),
-        validate,
-    ],
+    index: [...applyCommonFilters, validate],
 
     findById: [param('id').isUUID(), validate],
 

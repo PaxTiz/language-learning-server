@@ -1,6 +1,6 @@
 import { user as User } from '@prisma/client'
 import { NextFunction, Request, Response } from 'express'
-import { query, validationResult } from 'express-validator'
+import { param, query, validationResult } from 'express-validator'
 import { Unauthenticated } from '../controllers/controller'
 import userRepository from '../repositories/user_repository'
 import Utils from '../utils/crypto'
@@ -57,4 +57,5 @@ export async function isAuth(req: Request, res: Response, next: NextFunction) {
 export const applyCommonFilters = [
     query('limit').optional().isInt({ min: 0 }).toInt(),
     query('offset').optional().isInt({ min: 0 }).toInt(),
+    param('q').optional().isString(),
 ]
