@@ -89,7 +89,7 @@ export function InternalServerError(res: Response): Response {
 }
 
 export function ServiceResponse(res: Response, data: unknown, status = 200) {
-    if (!data) {
+    if (!data && typeof data !== 'number') {
         return NotFound(res)
     }
     if (
