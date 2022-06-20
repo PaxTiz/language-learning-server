@@ -8,7 +8,7 @@ const wrongLanguage = {
     code: 'AAA',
 }
 const validLanguage = {
-    id: undefined,
+    id: null,
     name: 'valid dummy language',
     code: 'VDL',
 }

@@ -1,5 +1,4 @@
 import { Request, Response } from 'express'
-import { LanguageInterface } from '../repositories/languages_repository'
 import languagesService from '../services/languages_service'
 import FormError from '../utils/form_error'
 import { ServiceResponse } from './controller'
@@ -31,14 +30,22 @@ export default {
     },
 
     async create(req: Request, res: Response) {
-        const body = req.body as LanguageInterface
-        return languagesService.create(body).then((language) => ServiceResponse(res, language, 201))
+        return languagesService
+            .create({
+                name: req.body.name,
+                code: req.body.code,
+            })
+            .then((language) => ServiceResponse(res, language, 201))
     },
 
     async update(req: Request, res: Response) {
-        const body = req.body as LanguageInterface
         const id = req.params.id
-        return languagesService.update(id, body).then((language) => ServiceResponse(res, language))
+        return languagesService
+            .update(id, {
+                name: req.body.name,
+                code: req.body.code,
+            })
+            .then((language) => ServiceResponse(res, language))
     },
 
     async delete(req: Request, res: Response) {
