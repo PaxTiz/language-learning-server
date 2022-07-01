@@ -1,5 +1,6 @@
 import { user } from '@prisma/client'
 import prisma, { UserWithRole } from '../client'
+import { SearchInterface } from './repository'
 import roleService from './role_repository'
 
 export interface UserCreateDTO {
@@ -36,6 +37,22 @@ const findOneBy = async (column: string, value: unknown): Promise<user | null> =
     })
 }
 
+const findAll = (
+    { limit, offset, query }: SearchInterface = {
+        limit: undefined,
+        offset: undefined,
+        query: undefined,
+    },
+): Promise<Array<user>> => {
+    return prisma.user.findMany({
+        skip: offset,
+        take: limit,
+        where: {
+            OR: [{ email: { contains: query } }, { username: { contains: query } }],
+        },
+    })
+}
+
 /**
  * Create a user in the database
  *
@@ -58,5 +75,6 @@ const create = async (user: UserCreateDTO): Promise<UserWithRole> => {
 export default {
     exists,
     findOneBy,
+    findAll,
     create,
 }
