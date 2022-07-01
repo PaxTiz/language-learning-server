@@ -3,5 +3,5 @@ import { join } from 'path'
 import Application from './application'
 
 new Application({
-    env: join(__dirname, '.env'),
+    env: join(__dirname, '..', '.env'),
 }).start()
