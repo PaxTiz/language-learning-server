@@ -28,7 +28,7 @@ const _getLanguages = (value: string, limit = 5) => {
         .findAll({
             offset: 0,
             limit: limit,
-            query: `%${value}%`,
+            query: value,
         })
         .then((res) =>
             res.map((e) => ({
@@ -45,14 +45,14 @@ const _getCourses = (value: string, limit = 5) => {
         .findAll({
             offset: 0,
             limit: limit,
-            query: `%${value}%`,
+            query: value,
         })
         .then((res) =>
             res.map((e) => ({
                 title: e.name,
                 target: `/courses/${e.id}`,
                 category: 'course',
-                categoryColor: 'blue',
+                categoryColor: 'red',
             })),
         )
 }

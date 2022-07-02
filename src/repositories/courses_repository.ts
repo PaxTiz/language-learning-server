@@ -1,6 +1,11 @@
 import { courses } from '@prisma/client'
 import prisma, { CourseWithLanguage } from '../client'
-import { CountInterface, FindOneExceptInterface, SearchInterface } from './repository'
+import {
+    CountInterface,
+    FindOneExceptInterface,
+    SearchInterface,
+    toFulltextQuery,
+} from './repository'
 
 export type CourseInterface = {
     name: string
@@ -8,11 +13,12 @@ export type CourseInterface = {
 }
 
 const count = ({ name }: CountInterface): Promise<number> => {
+    if (name) {
+        name = toFulltextQuery(name)
+    }
     return prisma.courses.count({
         where: {
-            name: {
-                contains: name,
-            },
+            name: { search: name },
         },
     })
 }
@@ -51,13 +57,14 @@ const findAll = (
         query: undefined,
     },
 ): Promise<Array<CourseWithLanguage>> => {
+    if (query) {
+        query = toFulltextQuery(query)
+    }
     return prisma.courses.findMany({
         skip: offset,
         take: limit,
         where: {
-            name: {
-                contains: query,
-            },
+            name: { search: query },
         },
         include: {
             language: true,
