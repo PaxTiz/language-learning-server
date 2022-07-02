@@ -24,54 +24,36 @@ const _getPages = (value: string) => {
 }
 
 const _getLanguages = (value: string, limit = 5) => {
-    return languagesRepository
-        .findAll({
-            offset: 0,
-            limit: limit,
-            query: value,
-        })
-        .then((res) =>
-            res.map((e) => ({
-                title: e.name,
-                target: `/languages/${e.id}`,
-                category: 'language',
-                categoryColor: 'blue',
-            })),
-        )
+    return languagesRepository.findAll({ limit, offset: 0, query: value }).then((res) =>
+        res.map((e) => ({
+            title: e.name,
+            target: `/languages/${e.id}`,
+            category: 'language',
+            categoryColor: 'blue',
+        })),
+    )
 }
 
 const _getCourses = (value: string, limit = 5) => {
-    return coursesRepository
-        .findAll({
-            offset: 0,
-            limit: limit,
-            query: value,
-        })
-        .then((res) =>
-            res.map((e) => ({
-                title: e.name,
-                target: `/courses/${e.id}`,
-                category: 'course',
-                categoryColor: 'red',
-            })),
-        )
+    return coursesRepository.findAll({ limit, offset: 0, query: value }).then((res) =>
+        res.map((e) => ({
+            title: e.name,
+            target: `/courses/${e.id}`,
+            category: 'course',
+            categoryColor: 'red',
+        })),
+    )
 }
 
 const _getUsers = (value: string, limit = 5) => {
-    return userRepository
-        .findAll({
-            offset: 0,
-            limit: limit,
-            query: `%${value}%`,
-        })
-        .then((res) =>
-            res.map((e) => ({
-                title: e.email,
-                target: `/users/${e.id}`,
-                category: 'user',
-                categoryColor: 'yellow',
-            })),
-        )
+    return userRepository.findAll({ limit, offset: 0, query: `%${value}%` }).then((res) =>
+        res.map((e) => ({
+            title: e.email,
+            target: `/users/${e.id}`,
+            category: 'user',
+            categoryColor: 'yellow',
+        })),
+    )
 }
 
 const methods = {
@@ -86,7 +68,6 @@ export default {
         if (value.includes(':')) {
             const points = value.indexOf(':')
             const category = value.substring(0, points) as Category
-            console.log(category)
             if (Object.values(Category).includes(category)) {
                 value = value.substring(points + 1)
                 return methods[category](value, 50)
