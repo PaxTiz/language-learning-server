@@ -4,8 +4,8 @@ import { ServiceResponse } from './controller'
 
 export default {
     async login(req: Request, res: Response) {
-        const { username, password } = req.body
-        const response = await authService.login(username, password)
+        const { email, password } = req.body
+        const response = await authService.login(email, password)
         return ServiceResponse(res, response)
     },
 

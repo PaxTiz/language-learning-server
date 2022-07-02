@@ -3,10 +3,10 @@ import Utils from '../utils/crypto'
 import FormError from '../utils/form_error'
 
 export default {
-    async login(username: string, password: string) {
-        const user = await userRepository.findOneBy('username', username)
+    async login(email: string, password: string) {
+        const user = await userRepository.findOneBy('email', email)
         if (!user) {
-            return new FormError('username', 'username_not_found')
+            return new FormError('email', 'email_not_found')
         }
 
         const isValidPassword = await Utils.validateBcrypt(password, user.password)
