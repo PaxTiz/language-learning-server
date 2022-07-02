@@ -2,9 +2,8 @@ import { role } from '@prisma/client'
 import prisma from '../client'
 
 const findByName = async (name: string): Promise<role> => {
-    return prisma.role.findFirst({
+    return prisma.role.findFirstOrThrow({
         where: { name },
-        rejectOnNotFound: true,
     })
 }
 
