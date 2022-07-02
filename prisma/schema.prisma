@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch", "fullTextIndex"]
 }
 
 datasource db {
@@ -31,6 +32,8 @@ model courses {
   language_id String    @db.VarChar(36)
   language    languages @relation(fields: [language_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   levels      level[]
+
+  @@fulltext([name])
 }
 
 model languages {
@@ -38,6 +41,8 @@ model languages {
   name    String    @unique @db.VarChar(255)
   code    String    @unique @db.VarChar(3)
   courses courses[]
+
+  @@fulltext([name])
 }
 
 model lessons {
