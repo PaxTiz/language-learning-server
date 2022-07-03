@@ -4,7 +4,7 @@ import fileUploadMiddleware from 'express-fileupload'
 import { body, param, query, validationResult } from 'express-validator'
 import { extname } from 'path'
 import { Unauthenticated } from '../controllers/controller'
-import userRepository from '../repositories/user_repository'
+import userService from '../services/users_service'
 import Utils from '../utils/crypto'
 
 declare global {
@@ -47,7 +47,7 @@ export async function isAuth(req: Request, res: Response, next: NextFunction) {
         return Unauthenticated(res)
     }
 
-    const fromDb = await userRepository.findOneBy('id', user.id)
+    const fromDb = await userService.findOneBy('id', user.id)
     if (!fromDb) {
         return Unauthenticated(res)
     }

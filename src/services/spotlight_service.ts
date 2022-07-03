@@ -1,6 +1,6 @@
-import userRepository from '../repositories/user_repository'
 import coursesService from '../services/courses_service'
 import languagesService from '../services/languages_service'
+import userService from '../services/users_service'
 import { capitalize } from '../utils/string'
 
 export enum Category {
@@ -46,7 +46,7 @@ const _getCourses = (value: string, limit = 5) => {
 }
 
 const _getUsers = (value: string, limit = 5) => {
-    return userRepository.findAll({ limit, offset: 0, query: `%${value}%` }).then((res) =>
+    return userService.findAll({ limit, offset: 0, query: `%${value}%` }).then((res) =>
         res.map((e) => ({
             title: e.email,
             target: `/users/${e.id}`,

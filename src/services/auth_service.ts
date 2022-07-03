@@ -1,10 +1,10 @@
-import userRepository from '../repositories/user_repository'
 import Utils from '../utils/crypto'
 import FormError from '../utils/form_error'
+import userService from './users_service'
 
 export default {
     async login(email: string, password: string) {
-        const user = await userRepository.findOneBy('email', email)
+        const user = await userService.findOneBy('email', email)
         if (!user) {
             return new FormError('email', 'email_not_found')
         }
@@ -23,13 +23,13 @@ export default {
     async create(username: string, password: string, email: string) {
         const errors = []
         /** Is the username already taken ? */
-        const usernameExists = await userRepository.exists('username', username)
+        const usernameExists = await userService.exists('username', username)
         if (usernameExists) {
             errors.push(new FormError('username', 'username_already_in_use'))
         }
 
         /** Is the email already taken ? */
-        const emailExists = await userRepository.exists('email', email)
+        const emailExists = await userService.exists('email', email)
         if (emailExists) {
             errors.push(new FormError('email', 'email_already_in_use'))
         }
@@ -41,7 +41,7 @@ export default {
         const user = { username, email, password: await Utils.bcrypt(password) }
 
         /** Insert user and returns data with JWT token */
-        return userRepository.create(user).then((inserted) => ({
+        return userService.create(user).then((inserted) => ({
             user: { ...inserted, password: undefined },
             token: Utils.generateJWT({ id: inserted.id }),
         }))
