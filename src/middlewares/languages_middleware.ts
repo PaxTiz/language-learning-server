@@ -9,7 +9,7 @@ export default {
     findById: [isAuth, param('id').isUUID(), validate],
 
     create: [
-        // isAuth,
+        isAuth,
         fileUpload(),
         body('name').isString().isLength({ min: 3 }),
         body('code').isString().isLength({ min: 3, max: 3 }),
@@ -18,7 +18,7 @@ export default {
     ],
 
     update: [
-        // isAuth,
+        isAuth,
         fileUpload(),
         param('id').optional().isUUID(),
         body('name').isString().isLength({ min: 3 }),
