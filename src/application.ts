@@ -2,7 +2,6 @@ import * as Sentry from '@sentry/node'
 import * as Tracing from '@sentry/tracing'
 import compression from 'compression'
 import cookieParser from 'cookie-parser'
-import cors from 'cors'
 import dotenv from 'dotenv'
 import express, { Express, NextFunction, Request, Response } from 'express'
 import { readdirSync } from 'fs'
@@ -63,20 +62,29 @@ export default class Application {
             this.app.use(morgan('dev'))
         }
 
+        const corsOrigins = process.env.CORS_ORIGINS?.split(',')
+        if (!corsOrigins) {
+            throw Error('Missing CORS origin(s)')
+        }
+
         this.app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }))
         this.app.use(express.urlencoded({ extended: false }))
         this.app.use(express.json())
         this.app.use(cookieParser())
-        this.app.use((req, res, next) => next(), cors())
-        this.app.use(
-            cors({
-                credentials: true,
-                origin: ['http://localhost:8080'],
-                preflightContinue: true,
-                optionsSuccessStatus: 200,
-            }),
-        )
         this.app.use(compression())
+
+        this.app.use((req: Request, res: Response, next: NextFunction) => {
+            for (const origin of corsOrigins) {
+                res.setHeader('Access-Control-Allow-Origin', origin)
+            }
+            res.setHeader('Access-Control-Allow-Credentials', 'true')
+            res.setHeader('Access-Control-Allow-Headers', 'authorization, content-type, accept')
+            res.setHeader(
+                'Access-Control-Allow-Methods',
+                'GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS',
+            )
+            return next()
+        })
     }
 
     private initRoutes() {
