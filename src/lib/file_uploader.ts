@@ -1,5 +1,5 @@
 import { existsSync } from 'fs'
-import { mkdir, writeFile, rm } from 'fs/promises'
+import { mkdir, rm, writeFile } from 'fs/promises'
 import { join } from 'path'
 import sharp from 'sharp'
 
@@ -43,8 +43,12 @@ export const uploadImage = async (options: UploadImageOptions) => {
     return `/upload/${path}`
 }
 
+export const read = (path: string) => {
+    return join(__dirname, '..', '..', path)
+}
+
 export const remove = (file: string) => {
-    const filename = join(__dirname, '..', '..', file)
+    const filename = read(file)
     if (existsSync(filename)) {
         return rm(filename)
     }

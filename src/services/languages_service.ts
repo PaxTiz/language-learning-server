@@ -1,7 +1,7 @@
 import { languages } from '@prisma/client'
 import { UploadedFile } from 'express-fileupload'
 import prisma from '../client'
-import { remove, uploadImage } from '../lib/file_uploader'
+import { read, remove, uploadImage } from '../lib/file_uploader'
 import FormError from '../utils/form_error'
 import { Format } from './export/exporter'
 import { LanguagesExporter } from './export/languages_exporter'
@@ -52,6 +52,15 @@ export default {
         return prisma.languages.findMany({
             where: { [property]: { in: values } },
         })
+    },
+
+    async getFlag(id: string) {
+        const language = await this.findOneBy('id', id)
+        if (!language) {
+            return null
+        }
+
+        return read(language.flag)
     },
 
     async create(language: LanguageCreate) {

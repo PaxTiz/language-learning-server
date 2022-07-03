@@ -6,6 +6,8 @@ export default {
 
     index: [isAuth, ...applyCommonFilters, validate],
 
+    flag: [isAuth, param('id').isUUID(), validate],
+
     findById: [isAuth, param('id').isUUID(), validate],
 
     create: [

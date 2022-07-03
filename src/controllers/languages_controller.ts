@@ -24,6 +24,13 @@ export default {
         return ServiceResponse(res, response)
     },
 
+    async flag(req: Request, res: Response) {
+        return languagesService.getFlag(req.params.id as string).then((flag) => {
+            if (!flag) return ServiceResponse(res, null)
+            return res.sendFile(flag)
+        })
+    },
+
     async findById(req: Request, res: Response) {
         return languagesService
             .findOneBy('id', req.params.id)
