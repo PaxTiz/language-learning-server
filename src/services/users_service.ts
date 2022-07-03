@@ -1,6 +1,6 @@
 import prisma from '../client'
 import { SearchInterface } from '../repositories/repository'
-import roleService from '../repositories/role_repository'
+import roleService from '../services/roles_service'
 
 export type UserInterface = {
     username: string
