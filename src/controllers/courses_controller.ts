@@ -1,6 +1,5 @@
 import { Request, Response } from 'express'
-import { CourseInterface } from '../repositories/courses_repository'
-import coursesService from '../services/courses_service'
+import coursesService, { CourseInterface } from '../services/courses_service'
 import FormError from '../utils/form_error'
 import { ServiceResponse } from './controller'
 
@@ -20,13 +19,13 @@ export default {
             query: req.query.q ? (req.query.q as string) : undefined,
         }
 
-        const response = await coursesService.index(query)
+        const response = await coursesService.findAll(query)
         return ServiceResponse(res, response)
     },
 
     async findById(req: Request, res: Response) {
         return coursesService
-            .findById(req.params.id)
+            .findOneBy('id', req.params.id)
             .then((language) => ServiceResponse(res, language))
     },
 

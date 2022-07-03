@@ -1,5 +1,5 @@
-import coursesRepository from '../repositories/courses_repository'
 import userRepository from '../repositories/user_repository'
+import coursesService from '../services/courses_service'
 import languagesService from '../services/languages_service'
 import { capitalize } from '../utils/string'
 
@@ -35,7 +35,7 @@ const _getLanguages = (value: string, limit = 5) => {
 }
 
 const _getCourses = (value: string, limit = 5) => {
-    return coursesRepository.findAll({ limit, offset: 0, query: value }).then((res) =>
+    return coursesService.findAll({ limit, offset: 0, query: value }).then((res) =>
         res.map((e) => ({
             title: e.name,
             target: `/courses/${e.id}`,

@@ -1,22 +1,53 @@
-import { CourseWithLanguage } from '../client'
-import courseRepositoru, { CourseInterface } from '../repositories/courses_repository'
-import { CountInterface, SearchInterface } from '../repositories/repository'
+import prisma, { CourseWithLanguage } from '../client'
+import { CountInterface, SearchInterface, toFulltextQuery } from '../repositories/repository'
 import FormError from '../utils/form_error'
 import { CoursesExporter } from './export/courses_exporter'
 import { Format } from './export/exporter'
 import languagesService from './languages_service'
 
+export type CourseInterface = {
+    name: string
+    language_id: string
+}
+
 export default {
     async count(params: CountInterface) {
-        return courseRepositoru.count(params)
+        if (params.name) {
+            params.name = toFulltextQuery(params.name)
+        }
+        return prisma.courses.count({
+            where: {
+                name: { search: params.name },
+            },
+        })
     },
 
-    async index(params: SearchInterface) {
-        return courseRepositoru.findAll(params)
+    async findAll(params: SearchInterface = {}) {
+        if (params.query) {
+            params.query = toFulltextQuery(params.query)
+        }
+        return prisma.courses.findMany({
+            skip: params.offset,
+            take: params.limit,
+            include: { language: true },
+            where: {
+                name: { search: params.query },
+            },
+        })
     },
 
-    async findById(id: string) {
-        return courseRepositoru.findOneBy('id', id)
+    async findOneBy(property: string, value: unknown) {
+        return prisma.courses.findFirst({
+            where: { [property]: value },
+            include: { language: true },
+        })
+    },
+
+    async findAllBy(property: string, values: Array<unknown>) {
+        return prisma.courses.findMany({
+            where: { [property]: { in: values } },
+            include: { language: true },
+        })
     },
 
     async create(course: CourseInterface) {
@@ -25,23 +56,36 @@ export default {
             return new FormError('code', 'code_already_exists')
         }
 
-        return courseRepositoru.create(course)
+        return prisma.courses.create({
+            data: course,
+            select: {
+                id: true,
+                name: true,
+                language: true,
+                language_id: true,
+            },
+        })
     },
 
-    async update(id: string, language: CourseInterface) {
-        const alreadyExists = await courseRepositoru.findOneBy('id', id)
+    async update(id: string, course: CourseInterface) {
+        const alreadyExists = await this.findOneBy('id', id)
         if (!alreadyExists) {
             return null
         }
 
-        return courseRepositoru.update(id, language)
+        return prisma.courses.update({
+            data: course,
+            where: { id },
+        })
     },
 
     async delete(id: string) {
-        const exists = await courseRepositoru.findOneBy('id', id)
+        const exists = await this.findOneBy('id', id)
         if (!exists) return null
 
-        return courseRepositoru.destroy(id)
+        return prisma.courses.delete({
+            where: { id },
+        })
     },
 
     async export(format: string, all: boolean, ids: Array<string> | string) {
@@ -50,8 +94,8 @@ export default {
         }
 
         const courses: Array<CourseWithLanguage> = all
-            ? await courseRepositoru.findAll()
-            : await courseRepositoru.findAllByIds(parseIds(ids))
+            ? await this.findAll()
+            : await this.findAllBy('id', parseIds(ids))
 
         return new CoursesExporter(format as Format, courses).export()
     },
