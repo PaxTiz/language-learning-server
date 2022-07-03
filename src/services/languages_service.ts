@@ -2,10 +2,10 @@ import { languages } from '@prisma/client'
 import { UploadedFile } from 'express-fileupload'
 import prisma from '../client'
 import { remove, uploadImage } from '../lib/file_uploader'
-import { CountInterface, SearchInterface, toFulltextQuery } from '../repositories/repository'
 import FormError from '../utils/form_error'
 import { Format } from './export/exporter'
 import { LanguagesExporter } from './export/languages_exporter'
+import { CountInterface, SearchInterface, toFulltextQuery } from './service'
 
 export type LanguageCreate = {
     name: string

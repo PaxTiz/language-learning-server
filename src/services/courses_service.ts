@@ -1,9 +1,9 @@
 import prisma, { CourseWithLanguage } from '../client'
-import { CountInterface, SearchInterface, toFulltextQuery } from '../repositories/repository'
 import FormError from '../utils/form_error'
 import { CoursesExporter } from './export/courses_exporter'
 import { Format } from './export/exporter'
 import languagesService from './languages_service'
+import { CountInterface, SearchInterface, toFulltextQuery } from './service'
 
 export type CourseInterface = {
     name: string
