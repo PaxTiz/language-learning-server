@@ -1,5 +1,5 @@
 import { body, param, query } from 'express-validator'
-import { applyCommonFilters, isAuth, validate } from './middleware'
+import { applyCommonFilters, file, fileUpload, isAuth, validate } from './middleware'
 
 export default {
     count: [isAuth, param('name').optional().isString(), validate],
@@ -9,17 +9,21 @@ export default {
     findById: [isAuth, param('id').isUUID(), validate],
 
     create: [
-        isAuth,
+        // isAuth,
+        fileUpload(),
         body('name').isString().isLength({ min: 3 }),
         body('code').isString().isLength({ min: 3, max: 3 }),
+        file({ name: 'flag', extensions: ['jpg', 'jpeg', 'png', 'webp'] }),
         validate,
     ],
 
     update: [
-        isAuth,
+        // isAuth,
+        fileUpload(),
         param('id').optional().isUUID(),
         body('name').isString().isLength({ min: 3 }),
         body('code').isString().isLength({ min: 3, max: 3 }),
+        file({ name: 'flag', extensions: ['jpg', 'jpeg', 'png', 'webp'], required: false }),
         validate,
     ],
 

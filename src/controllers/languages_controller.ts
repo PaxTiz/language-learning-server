@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import { UploadedFile } from 'express-fileupload'
 import languagesService from '../services/languages_service'
 import FormError from '../utils/form_error'
 import { ServiceResponse } from './controller'
@@ -30,10 +31,12 @@ export default {
     },
 
     async create(req: Request, res: Response) {
+        if (!req.files) return
         return languagesService
             .create({
                 name: req.body.name,
                 code: req.body.code,
+                flag: req.files.flag as UploadedFile,
             })
             .then((language) => ServiceResponse(res, language, 201))
     },
@@ -44,6 +47,7 @@ export default {
             .update(id, {
                 name: req.body.name,
                 code: req.body.code,
+                flag: req.files && req.files.flag ? (req.files.flag as UploadedFile) : undefined,
             })
             .then((language) => ServiceResponse(res, language))
     },

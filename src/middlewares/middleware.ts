@@ -61,10 +61,10 @@ type FileUploadOptions = {
     extensions?: string | Array<string>
     required?: boolean
 }
-export const fileUpload = (limit = 1000000) => {
+export const fileUpload = (limit: number | undefined = undefined) => {
     return fileUploadMiddleware({
         limits: { fileSize: limit },
-        debug: true,
+        debug: process.env.ENABLE_FILE_UPLOAD_LOGS === 'true',
         responseOnLimit: 'file_too_big',
     })
 }

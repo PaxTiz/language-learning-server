@@ -1,16 +1,12 @@
 import { languages } from '@prisma/client'
 import prisma from '../client'
+
 import {
     CountInterface,
     FindOneExceptInterface,
     SearchInterface,
     toFulltextQuery,
 } from './repository'
-
-export type LanguageInterface = {
-    name: string
-    code: string
-}
 
 const count = ({ name }: CountInterface): Promise<number> => {
     if (name) {
@@ -73,20 +69,9 @@ const findAllByIds = (ids: Array<string>): Promise<Array<languages>> => {
     })
 }
 
-const create = (language: LanguageInterface): Promise<languages> => {
-    return prisma.languages.create({
-        data: language,
-        select: {
-            id: true,
-            name: true,
-            code: true,
-        },
-    })
-}
-
-const update = (id: string, language: LanguageInterface): Promise<languages> => {
+const setFlag = (id: string, flag: string): Promise<languages> => {
     return prisma.languages.update({
-        data: language,
+        data: { flag },
         where: { id },
     })
 }
@@ -103,7 +88,6 @@ export default {
     findAllByIds,
     findOneBy,
     findOneByExcept,
-    create,
-    update,
+    setFlag,
     destroy,
 }

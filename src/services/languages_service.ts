@@ -1,9 +1,24 @@
 import { languages } from '@prisma/client'
-import languagesRepository, { LanguageInterface } from '../repositories/languages_repository'
+import { UploadedFile } from 'express-fileupload'
+import prisma from '../client'
+import { remove, uploadImage } from '../lib/file_uploader'
+import languagesRepository from '../repositories/languages_repository'
 import { CountInterface, SearchInterface } from '../repositories/repository'
 import FormError from '../utils/form_error'
 import { Format } from './export/exporter'
 import { LanguagesExporter } from './export/languages_exporter'
+
+export type LanguageCreate = {
+    name: string
+    code: string
+    flag: UploadedFile
+}
+
+export type LanguageUpdate = {
+    name: string
+    code: string
+    flag?: UploadedFile
+}
 
 export default {
     async count(params: CountInterface) {
@@ -18,37 +33,80 @@ export default {
         return languagesRepository.findOneBy('id', id)
     },
 
-    async create(language: LanguageInterface) {
-        const codeExists = await languagesRepository.findOneBy('code', language.code)
-        if (codeExists) {
-            return new FormError('code', 'code_already_exists')
-        }
+    async create(language: LanguageCreate) {
+        return prisma.$transaction(async (prisma) => {
+            const codeExists = await prisma.languages.findFirst({ where: { code: language.code } })
+            if (codeExists) {
+                return new FormError('code', 'code_already_exists')
+            }
 
-        return languagesRepository.create(language)
+            const created = await prisma.languages.create({
+                data: {
+                    name: language.name,
+                    code: language.code,
+                    flag: '',
+                },
+            })
+
+            return uploadImage({
+                data: language.flag.data,
+                name: created.id,
+                directory: 'flags',
+                format: 'webp',
+            }).then((flag) => {
+                return prisma.languages.update({
+                    data: { flag },
+                    where: { id: created.id },
+                })
+            })
+        })
     },
 
-    async update(id: string, language: LanguageInterface) {
-        const alreadyExists = await languagesRepository.findOneBy('id', id)
-        if (!alreadyExists) {
-            return null
-        }
+    async update(id: string, language: LanguageUpdate) {
+        return prisma.$transaction(async (prisma) => {
+            const alreadyExists = await prisma.languages.findFirst({ where: { id } })
+            if (!alreadyExists) {
+                return null
+            }
 
-        const codeExists = await languagesRepository.findOneByExcept({
-            find: { property: 'code', value: language.code },
-            except: { property: 'id', value: id },
+            const codeExists = await prisma.languages.findFirst({
+                where: {
+                    code: language.code,
+                    id: { not: id },
+                },
+            })
+            if (codeExists) {
+                return new FormError('code', 'code_already_exists')
+            }
+
+            if (language.flag) {
+                await uploadImage({
+                    data: language.flag.data,
+                    name: alreadyExists.id,
+                    format: 'webp',
+                    directory: 'flags',
+                })
+            }
+
+            return prisma.languages.update({
+                data: {
+                    name: language.name,
+                    code: language.code,
+                },
+                where: { id },
+            })
         })
-        if (codeExists) {
-            return new FormError('code', 'code_already_exists')
-        }
-
-        return languagesRepository.update(id, language)
     },
 
     async delete(id: string) {
-        const exists = await languagesRepository.findOneBy('id', id)
-        if (!exists) return null
+        return prisma.$transaction(async (prisma) => {
+            const exists = await prisma.languages.findFirst({ where: { id } })
+            if (!exists) return null
 
-        return languagesRepository.destroy(id)
+            return remove(exists.flag)?.then(() => {
+                return languagesRepository.destroy(id)
+            })
+        })
     },
 
     async export(format: string, all: boolean, ids: Array<string> | string) {
