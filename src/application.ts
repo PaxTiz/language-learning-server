@@ -1,6 +1,7 @@
 import * as Sentry from '@sentry/node'
 import * as Tracing from '@sentry/tracing'
 import compression from 'compression'
+import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import dotenv from 'dotenv'
 import express, { Express, NextFunction, Request, Response } from 'express'
@@ -65,6 +66,7 @@ export default class Application {
         this.app.use(helmet())
         this.app.use(express.urlencoded({ extended: false }))
         this.app.use(express.json())
+        this.app.use(cookieParser())
         this.app.use((req, res, next) => next(), cors())
         this.app.use(
             cors({
