@@ -20,13 +20,13 @@ export default {
             query: req.query.q ? (req.query.q as string) : undefined,
         }
 
-        const response = await languagesService.index(query)
+        const response = await languagesService.findAll(query)
         return ServiceResponse(res, response)
     },
 
     async findById(req: Request, res: Response) {
         return languagesService
-            .findById(req.params.id)
+            .findOneBy('id', req.params.id)
             .then((language) => ServiceResponse(res, language))
     },
 

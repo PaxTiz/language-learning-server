@@ -1,10 +1,10 @@
 import { CourseWithLanguage } from '../client'
 import courseRepositoru, { CourseInterface } from '../repositories/courses_repository'
-import languagesRepository from '../repositories/languages_repository'
 import { CountInterface, SearchInterface } from '../repositories/repository'
 import FormError from '../utils/form_error'
 import { CoursesExporter } from './export/courses_exporter'
 import { Format } from './export/exporter'
+import languagesService from './languages_service'
 
 export default {
     async count(params: CountInterface) {
@@ -20,7 +20,7 @@ export default {
     },
 
     async create(course: CourseInterface) {
-        const languageExists = await languagesRepository.findOneBy('code', course.language_id)
+        const languageExists = await languagesService.findOneBy('code', course.language_id)
         if (languageExists) {
             return new FormError('code', 'code_already_exists')
         }

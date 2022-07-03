@@ -2,8 +2,7 @@ import { languages } from '@prisma/client'
 import { UploadedFile } from 'express-fileupload'
 import prisma from '../client'
 import { remove, uploadImage } from '../lib/file_uploader'
-import languagesRepository from '../repositories/languages_repository'
-import { CountInterface, SearchInterface } from '../repositories/repository'
+import { CountInterface, SearchInterface, toFulltextQuery } from '../repositories/repository'
 import FormError from '../utils/form_error'
 import { Format } from './export/exporter'
 import { LanguagesExporter } from './export/languages_exporter'
@@ -22,15 +21,37 @@ export type LanguageUpdate = {
 
 export default {
     async count(params: CountInterface) {
-        return languagesRepository.count(params)
+        if (params.name) {
+            params.name = toFulltextQuery(params.name)
+        }
+        return prisma.languages.count({
+            where: {
+                name: { search: params.name },
+            },
+        })
     },
 
-    async index(params: SearchInterface) {
-        return languagesRepository.findAll(params)
+    async findAll(params: SearchInterface = {}) {
+        if (params.query) {
+            params.query = toFulltextQuery(params.query)
+        }
+        return prisma.languages.findMany({
+            skip: params.offset,
+            take: params.limit,
+            where: {
+                name: { search: params.query },
+            },
+        })
     },
 
-    async findById(id: string) {
-        return languagesRepository.findOneBy('id', id)
+    async findOneBy(property: string, value: unknown) {
+        return prisma.languages.findFirst({ where: { [property]: value } })
+    },
+
+    async findAllBy(property: string, values: Array<unknown>) {
+        return prisma.languages.findMany({
+            where: { [property]: { in: values } },
+        })
     },
 
     async create(language: LanguageCreate) {
@@ -104,7 +125,7 @@ export default {
             if (!exists) return null
 
             return remove(exists.flag)?.then(() => {
-                return languagesRepository.destroy(id)
+                return prisma.languages.delete({ where: { id } })
             })
         })
     },
@@ -115,8 +136,8 @@ export default {
         }
 
         const languages: Array<languages> = all
-            ? await languagesRepository.findAll()
-            : await languagesRepository.findAllByIds(parseIds(ids))
+            ? await this.findAll()
+            : await this.findAllBy('id', parseIds(ids))
 
         return new LanguagesExporter(format as Format, languages).export()
     },

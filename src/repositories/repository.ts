@@ -1,7 +1,7 @@
 export type SearchInterface = {
-    limit: number | undefined
-    offset: number | undefined
-    query: string | undefined
+    limit?: number
+    offset?: number
+    query?: string
 }
 
 export type CountInterface = {
