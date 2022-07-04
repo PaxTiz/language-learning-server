@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import authService from '../services/auth_service'
+import userService from '../services/users_service'
 import { ServiceResponse } from './controller'
 
 export default {
@@ -16,6 +17,6 @@ export default {
     },
 
     async me(req: Request, res: Response) {
-        return ServiceResponse(res, { ...req.user, password: undefined })
+        return ServiceResponse(res, userService.safeUser(req.user))
     },
 }

@@ -74,11 +74,8 @@ export default {
             }
         }
 
-        return [
-            ..._getPages(value),
-            ...(await _getLanguages(value)),
-            ...(await _getCourses(value)),
-            ...(await _getUsers(value)),
-        ]
+        const pages = _getPages(value)
+        const data = await Promise.all([_getLanguages(value), _getCourses(value), _getUsers(value)])
+        return [...pages, ...data.reduce((current, value) => [...current, ...value], [])]
     },
 }

@@ -2,6 +2,7 @@ import prisma, { CourseWithLanguage } from '../client'
 import { CoursesExporter } from '../lib/export/courses_exporter'
 import { Format } from '../lib/export/exporter'
 import FormError from '../utils/form_error'
+import { parseIds } from '../utils/string'
 import languagesService from './languages_service'
 import { CountInterface, SearchInterface, toFulltextQuery } from './service'
 
@@ -99,12 +100,4 @@ export default {
 
         return new CoursesExporter(format as Format, courses).export()
     },
-}
-
-const parseIds = (ids: Array<string> | string): Array<string> => {
-    let items = ids
-    if (typeof ids === 'string') {
-        items = ids.split(',')
-    }
-    return Array.from(new Set(items))
 }

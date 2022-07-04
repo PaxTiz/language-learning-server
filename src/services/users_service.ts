@@ -1,3 +1,4 @@
+import { user } from '@prisma/client'
 import prisma from '../client'
 import roleService from '../services/roles_service'
 import { SearchInterface } from './service'
@@ -9,6 +10,10 @@ export type UserInterface = {
 }
 
 export default {
+    safeUser(user: user) {
+        return { ...user, password: undefined }
+    },
+
     async exists(column: string, value: unknown) {
         const count = await prisma.user.count({
             where: { [column]: value },
@@ -38,7 +43,7 @@ export default {
 
     async create(user: UserInterface) {
         const role = await roleService.findByName('default')
-        return await prisma.user.create({
+        return prisma.user.create({
             data: {
                 username: user.username,
                 email: user.email,

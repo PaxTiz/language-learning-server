@@ -1,9 +1,10 @@
 import { existsSync } from 'fs'
-import { mkdir, rm, writeFile } from 'fs/promises'
+import { mkdir, readFile as fsReadFile, rm, writeFile } from 'fs/promises'
 import { join } from 'path'
 import sharp from 'sharp'
 
-const uploadDirectory = join(__dirname, '..', '..', 'upload')
+const baseDirectory = join(__dirname, '..', '..')
+const uploadDirectory = join(baseDirectory, 'upload')
 
 type UploadImageOptions = {
     data: Buffer
@@ -43,12 +44,18 @@ export const uploadImage = async (options: UploadImageOptions) => {
     return `/upload/${path}`
 }
 
-export const read = (path: string) => {
-    return join(__dirname, '..', '..', path)
+export const absolutePath = (path: string) => {
+    return join(baseDirectory, path)
 }
 
-export const remove = (file: string) => {
-    const filename = read(file)
+// Read as buffer by default, use utf8 = true tp read as string
+export const readFile = (path: string, utf8 = false) => {
+    const filePath = absolutePath(path)
+    return fsReadFile(filePath, { encoding: utf8 ? 'utf-8' : undefined })
+}
+
+export const remove = async (file: string) => {
+    const filename = absolutePath(file)
     if (existsSync(filename)) {
         return rm(filename)
     }

@@ -15,20 +15,18 @@ export default {
         }
 
         return {
-            user: { ...user, password: undefined },
+            user: userService.safeUser(user),
             token: Utils.generateJWT({ id: user.id }),
         }
     },
 
     async create(username: string, password: string, email: string) {
         const errors = []
-        /** Is the username already taken ? */
         const usernameExists = await userService.exists('username', username)
         if (usernameExists) {
             errors.push(new FormError('username', 'username_already_in_use'))
         }
 
-        /** Is the email already taken ? */
         const emailExists = await userService.exists('email', email)
         if (emailExists) {
             errors.push(new FormError('email', 'email_already_in_use'))
@@ -40,9 +38,8 @@ export default {
 
         const user = { username, email, password: await Utils.bcrypt(password) }
 
-        /** Insert user and returns data with JWT token */
         return userService.create(user).then((inserted) => ({
-            user: { ...inserted, password: undefined },
+            user: userService.safeUser(inserted),
             token: Utils.generateJWT({ id: inserted.id }),
         }))
     },

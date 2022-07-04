@@ -15,9 +15,9 @@ export default {
 
     async index(req: Request, res: Response) {
         const query = {
-            offset: req.query.offset ? parseInt(req.query.offset as string) : undefined,
-            limit: req.query.limit ? parseInt(req.query.limit as string) : undefined,
-            query: req.query.q ? (req.query.q as string) : undefined,
+            offset: parseInt(req.query.offset as string) || undefined,
+            limit: parseInt(req.query.limit as string) || undefined,
+            query: (req.query.q as string) || undefined,
         }
 
         const response = await languagesService.findAll(query)
@@ -54,7 +54,7 @@ export default {
             .update(id, {
                 name: req.body.name,
                 code: req.body.code,
-                flag: req.files && req.files.flag ? (req.files.flag as UploadedFile) : undefined,
+                flag: req.files?.flag as UploadedFile,
             })
             .then((language) => ServiceResponse(res, language))
     },

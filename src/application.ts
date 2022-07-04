@@ -20,7 +20,7 @@ export default class Application {
 
     constructor(options: ApplicationInitializer) {
         this.initDotenv(options.env)
-        this.isDevelopment = process.env.APP_ENV === 'development'
+        this.isDevelopment = process.env.APP_ENV !== 'production'
 
         this.app = express()
         this.initSentry()

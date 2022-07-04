@@ -3,8 +3,9 @@ import { UploadedFile } from 'express-fileupload'
 import prisma from '../client'
 import { Format } from '../lib/export/exporter'
 import { LanguagesExporter } from '../lib/export/languages_exporter'
-import { read, remove, uploadImage } from '../lib/file_uploader'
+import { absolutePath, remove, uploadImage } from '../lib/file_uploader'
 import FormError from '../utils/form_error'
+import { parseIds } from '../utils/string'
 import { CountInterface, SearchInterface, toFulltextQuery } from './service'
 
 export type LanguageCreate = {
@@ -60,12 +61,12 @@ export default {
             return null
         }
 
-        return read(language.flag)
+        return absolutePath(language.flag)
     },
 
     async create(language: LanguageCreate) {
         return prisma.$transaction(async (prisma) => {
-            const codeExists = await prisma.languages.findFirst({ where: { code: language.code } })
+            const codeExists = await this.findOneBy('code', language.code)
             if (codeExists) {
                 return new FormError('code', 'code_already_exists')
             }
@@ -94,7 +95,7 @@ export default {
 
     async update(id: string, language: LanguageUpdate) {
         return prisma.$transaction(async (prisma) => {
-            const alreadyExists = await prisma.languages.findFirst({ where: { id } })
+            const alreadyExists = await this.findOneBy('id', id)
             if (!alreadyExists) {
                 return null
             }
@@ -130,7 +131,7 @@ export default {
 
     async delete(id: string) {
         return prisma.$transaction(async (prisma) => {
-            const exists = await prisma.languages.findFirst({ where: { id } })
+            const exists = await this.findOneBy('id', id)
             if (!exists) return null
 
             return remove(exists.flag)?.then(() => {
@@ -150,12 +151,4 @@ export default {
 
         return new LanguagesExporter(format as Format, languages).export()
     },
-}
-
-const parseIds = (ids: Array<string> | string): Array<string> => {
-    let items = ids
-    if (typeof ids === 'string') {
-        items = ids.split(',')
-    }
-    return Array.from(new Set(items))
 }
