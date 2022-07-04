@@ -1,7 +1,7 @@
 import prisma, { CourseWithLanguage } from '../client'
+import { CoursesExporter } from '../lib/export/courses_exporter'
+import { Format } from '../lib/export/exporter'
 import FormError from '../utils/form_error'
-import { CoursesExporter } from './export/courses_exporter'
-import { Format } from './export/exporter'
 import languagesService from './languages_service'
 import { CountInterface, SearchInterface, toFulltextQuery } from './service'
 
