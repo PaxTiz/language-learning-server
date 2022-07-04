@@ -46,8 +46,8 @@ const getToken = (req: Request) => {
 }
 
 /**
- * Deny access if no Authorization header is present
- * or JWT token is not valid
+ * Deny access if there is no authentication method
+ * JWT token can be sent in Authorization or Cookies header
  */
 export async function isAuth(req: Request, res: Response, next: NextFunction) {
     const token = getToken(req)
