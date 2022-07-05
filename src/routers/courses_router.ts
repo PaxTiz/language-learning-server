@@ -15,5 +15,5 @@ module.exports = (app: Express) => {
 
     router.patch('/:id', middleware.update, controller.update)
 
-    router.delete('/:id', middleware.delete, controller.delete)
+    router.delete('/', middleware.delete, controller.delete)
 }

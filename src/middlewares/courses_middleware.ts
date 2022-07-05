@@ -23,7 +23,7 @@ export default {
         validate,
     ],
 
-    delete: [isAuth, param('id').isUUID(), validate],
+    delete: [isAuth, query('courses.*').optional().isUUID(), validate],
 
     export: [
         isAuth,

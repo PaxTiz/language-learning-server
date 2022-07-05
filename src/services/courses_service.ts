@@ -80,12 +80,13 @@ export default {
         })
     },
 
-    async delete(id: string) {
-        const exists = await this.findOneBy('id', id)
-        if (!exists) return null
+    async delete(ids: Array<string>) {
+        if (!ids) {
+            return new FormError('ids', 'missing_ids')
+        }
 
-        return prisma.courses.delete({
-            where: { id },
+        return prisma.courses.deleteMany({
+            where: { id: { in: ids } },
         })
     },
 

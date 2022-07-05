@@ -41,8 +41,8 @@ export default {
     },
 
     async delete(req: Request, res: Response) {
-        const id = req.params.id
-        return coursesService.delete(id).then((language) => ServiceResponse(res, language))
+        const courses = req.query.courses as Array<string>
+        return coursesService.delete(courses).then((language) => ServiceResponse(res, language))
     },
 
     async export(req: Request, res: Response) {
