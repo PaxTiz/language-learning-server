@@ -3,7 +3,7 @@ import { UploadedFile } from 'express-fileupload'
 import prisma from '../client'
 import { Format } from '../lib/export/exporter'
 import { LanguagesExporter } from '../lib/export/languages_exporter'
-import { absolutePath, remove, uploadImage } from '../lib/file_uploader'
+import { absolutePath, uploadImage } from '../lib/file_uploader'
 import FormError from '../utils/form_error'
 import { parseIds } from '../utils/string'
 import { CountInterface, SearchInterface, toFulltextQuery } from './service'
@@ -129,14 +129,14 @@ export default {
         })
     },
 
-    async delete(id: string) {
-        return prisma.$transaction(async (prisma) => {
-            const exists = await this.findOneBy('id', id)
-            if (!exists) return null
+    async delete(ids: Array<string>) {
+        if (!ids) {
+            return new FormError('ids', 'missing_ids')
+        }
 
-            return remove(exists.flag)?.then(() => {
-                return prisma.languages.delete({ where: { id } })
-            })
+        ids = parseIds(ids)
+        return prisma.languages.deleteMany({
+            where: { id: { in: ids } },
         })
     },
 

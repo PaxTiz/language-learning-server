@@ -29,7 +29,7 @@ export default {
         validate,
     ],
 
-    delete: [isAuth, param('id').isUUID(), validate],
+    delete: [isAuth, query('languages.*').optional().isUUID(), validate],
 
     export: [
         isAuth,

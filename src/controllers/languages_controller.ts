@@ -60,8 +60,8 @@ export default {
     },
 
     async delete(req: Request, res: Response) {
-        const id = req.params.id
-        return languagesService.delete(id).then((language) => ServiceResponse(res, language))
+        const languages = req.query.languages as Array<string>
+        return languagesService.delete(languages).then((language) => ServiceResponse(res, language))
     },
 
     async export(req: Request, res: Response) {
